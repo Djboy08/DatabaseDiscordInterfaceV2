@@ -24,27 +24,31 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction: any) {
-    const userid = interaction.options.getString("userid") ?? undefined;
-    let ban = userid ? await getBan(interaction.client.db, userid) : null;
-    ban.AdminName = `<@${ban?.AdminID ?? "System?"}>`;
-    if (!ban) {
-      await interaction.reply({
-        content: `No ban found for user ${userid}.`,
-        flags: 1 << 6, // Ephemeral
+    try {
+      const userid = interaction.options.getString("userid") ?? undefined;
+      let ban = userid ? await getBan(interaction.client.db, userid) : null;
+      ban.AdminName = `<@${ban?.AdminID ?? "System?"}>`;
+      if (!ban) {
+        await interaction.reply({
+          content: `No ban found for user ${userid}.`,
+          flags: 1 << 6, // Ephemeral
+        });
+        return;
+      }
+      let embed = getBanEmbed({
+        UserID: ban.UserID,
+        Banned: ban.Banned,
+        Length: ban.Length,
+        Reason: ban.Reason,
+        Proof: ban.Proof,
+        UnbanDate: ban.UnbanDate,
+        AdminName: ban.AdminName,
+        TestUniverse: ban.TestUniverse,
       });
-      return;
+      await interaction.reply({ ...embed, flags: 1 << 6 }); // Ephemeral
+    } catch (e) {
+      console.error(e);
     }
-    let embed = getBanEmbed({
-      UserID: ban.UserID,
-      Banned: ban.Banned,
-      Length: ban.Length,
-      Reason: ban.Reason,
-      Proof: ban.Proof,
-      UnbanDate: ban.UnbanDate,
-      AdminName: ban.AdminName,
-      TestUniverse: ban.TestUniverse,
-    });
-    await interaction.reply({ ...embed, flags: 1 << 6 }); // Ephemeral
   },
 };
 function formatUnbanDate(UnbanDate: any): string {

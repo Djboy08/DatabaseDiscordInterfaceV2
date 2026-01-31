@@ -25,85 +25,87 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction: any) {
-    const userid = interaction.options.getString("userid") ?? undefined;
-    console.log("Userid:", userid);
-    let ban = userid ? await getBan(interaction.client.db, userid) : null;
-    console.log("Ban found:", ban);
-    const modalId = `banModal:${interaction.user.id}:${Date.now()}`;
-    const modal = new ModalBuilder().setCustomId(modalId).setTitle("Ban Form");
-    const unbanDateInput = new TextInputBuilder()
-      .setCustomId("unbanDateInput")
-      .setStyle(TextInputStyle.Short)
-      .setPlaceholder("5D, 12H, 1Y, etc. Leave blank for permanent ban.")
-      .setRequired(false)
-      .setValue(ban ? formatUnbanDate(ban.UnbanDate) : "");
-    const unbanLabel = new LabelBuilder()
-      .setLabel("When should the ban be lifted?")
-      .setDescription("Unban Date")
-      .setTextInputComponent(unbanDateInput);
-    // const isBannedInput = new StringSelectMenuBuilder()
-    //   .setCustomId("isBanned")
-    //   .setPlaceholder("Is the user banned?")
-    //   // Modal only property on select menus to prevent submission, defaults to true
-    //   .setRequired(true)
-    //   .addOptions(
-    //     // String select menu options
-    //     new StringSelectMenuOptionBuilder()
-    //       // Label displayed to user
-    //       .setLabel("Banned")
-    //       // Description of option
-    //       .setDescription("Banned")
-    //       // Value returned to you in modal submission
-    //       .setValue("Banned")
-    //       .setDefault(ban ? ban.Banned === true : false),
-    //     new StringSelectMenuOptionBuilder()
-    //       .setLabel("Unbanned")
-    //       .setDescription("Unbanned")
-    //       .setValue("Unbanned")
-    //       .setDefault(ban ? ban.Banned === false : false),
-    //   );
-    // const isBannedLabel = new LabelBuilder()
-    //   .setLabel("Enforced ban")
-    //   // Set string select menu as component of the label
-    //   .setStringSelectMenuComponent(isBannedInput);
-    // const unbanDateInput = new TextInputBuilder()
-    //   .setCustomId("unbanDateInput")
-    //   .setStyle(TextInputStyle.Short)
-    //   .setPlaceholder("5D, 12H, 1Y, etc. Leave blank for permanent ban.")
-    //   .setRequired(false)
-    //   .setValue(ban && ban.UnbanDate ? formatUnbanDate(ban.UnbanDate) : "");
-    // const unbanLabel = new LabelBuilder()
-    //   .setLabel("When should the ban be lifted?")
-    //   .setDescription("Unban Date")
-    //   .setTextInputComponent(unbanDateInput);
-    const reasonInput = new TextInputBuilder()
-      .setCustomId("reasonInput")
-      .setStyle(TextInputStyle.Paragraph)
-      .setPlaceholder("exploiting, abusing, etc.")
-      .setValue(ban ? (ban.Reason ?? "") : "");
-
-    const reasonLabel = new LabelBuilder()
-      .setLabel("What is the reason for the ban?")
-      .setDescription("Ban reason")
-      .setTextInputComponent(reasonInput);
-
-    const proofInput = new TextInputBuilder()
-      .setCustomId("proofInput")
-      .setStyle(TextInputStyle.Paragraph)
-      .setPlaceholder("Links, etc.")
-      .setValue(ban ? (ban.Proof ?? "") : "");
-
-    const proofLabel = new LabelBuilder()
-      .setLabel("What is the proof for the ban?")
-      .setDescription("Proof")
-      .setTextInputComponent(proofInput);
-
-    // modal.addLabelComponents(isBannedLabel);
-    modal.addLabelComponents(reasonLabel);
-    modal.addLabelComponents(proofLabel);
-    modal.addLabelComponents(unbanLabel);
-
     try {
+      const userid = interaction.options.getString("userid") ?? undefined;
+      console.log("Userid:", userid);
+      let ban = userid ? await getBan(interaction.client.db, userid) : null;
+      console.log("Ban found:", ban);
+      const modalId = `banModal:${interaction.user.id}:${Date.now()}`;
+      const modal = new ModalBuilder()
+        .setCustomId(modalId)
+        .setTitle("Ban Form");
+      const unbanDateInput = new TextInputBuilder()
+        .setCustomId("unbanDateInput")
+        .setStyle(TextInputStyle.Short)
+        .setPlaceholder("5D, 12H, 1Y, etc. Leave blank for permanent ban.")
+        .setRequired(false)
+        .setValue(ban ? formatUnbanDate(ban.UnbanDate) : "");
+      const unbanLabel = new LabelBuilder()
+        .setLabel("When should the ban be lifted?")
+        .setDescription("Unban Date")
+        .setTextInputComponent(unbanDateInput);
+      // const isBannedInput = new StringSelectMenuBuilder()
+      //   .setCustomId("isBanned")
+      //   .setPlaceholder("Is the user banned?")
+      //   // Modal only property on select menus to prevent submission, defaults to true
+      //   .setRequired(true)
+      //   .addOptions(
+      //     // String select menu options
+      //     new StringSelectMenuOptionBuilder()
+      //       // Label displayed to user
+      //       .setLabel("Banned")
+      //       // Description of option
+      //       .setDescription("Banned")
+      //       // Value returned to you in modal submission
+      //       .setValue("Banned")
+      //       .setDefault(ban ? ban.Banned === true : false),
+      //     new StringSelectMenuOptionBuilder()
+      //       .setLabel("Unbanned")
+      //       .setDescription("Unbanned")
+      //       .setValue("Unbanned")
+      //       .setDefault(ban ? ban.Banned === false : false),
+      //   );
+      // const isBannedLabel = new LabelBuilder()
+      //   .setLabel("Enforced ban")
+      //   // Set string select menu as component of the label
+      //   .setStringSelectMenuComponent(isBannedInput);
+      // const unbanDateInput = new TextInputBuilder()
+      //   .setCustomId("unbanDateInput")
+      //   .setStyle(TextInputStyle.Short)
+      //   .setPlaceholder("5D, 12H, 1Y, etc. Leave blank for permanent ban.")
+      //   .setRequired(false)
+      //   .setValue(ban && ban.UnbanDate ? formatUnbanDate(ban.UnbanDate) : "");
+      // const unbanLabel = new LabelBuilder()
+      //   .setLabel("When should the ban be lifted?")
+      //   .setDescription("Unban Date")
+      //   .setTextInputComponent(unbanDateInput);
+      const reasonInput = new TextInputBuilder()
+        .setCustomId("reasonInput")
+        .setStyle(TextInputStyle.Paragraph)
+        .setPlaceholder("exploiting, abusing, etc.")
+        .setValue(ban ? (ban.Reason ?? "") : "");
+
+      const reasonLabel = new LabelBuilder()
+        .setLabel("What is the reason for the ban?")
+        .setDescription("Ban reason")
+        .setTextInputComponent(reasonInput);
+
+      const proofInput = new TextInputBuilder()
+        .setCustomId("proofInput")
+        .setStyle(TextInputStyle.Paragraph)
+        .setPlaceholder("Links, etc.")
+        .setValue(ban ? (ban.Proof ?? "") : "");
+
+      const proofLabel = new LabelBuilder()
+        .setLabel("What is the proof for the ban?")
+        .setDescription("Proof")
+        .setTextInputComponent(proofInput);
+
+      // modal.addLabelComponents(isBannedLabel);
+      modal.addLabelComponents(reasonLabel);
+      modal.addLabelComponents(proofLabel);
+      modal.addLabelComponents(unbanLabel);
+
       await interaction.showModal(modal);
       let modalInteraction = await interaction.awaitModalSubmit({
         time: 180000,
