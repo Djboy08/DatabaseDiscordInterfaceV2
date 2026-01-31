@@ -242,4 +242,9 @@ client.on(Events.Error, (error) => {
   console.error("The client encountered an error:", error);
 });
 
-client.login(Bun.env.DISCORD_TOKEN);
+client
+  .login(Bun.env.DISCORD_TOKEN)
+  .then()
+  .catch((err) => {
+    console.log("Error logging in:", err);
+  });
