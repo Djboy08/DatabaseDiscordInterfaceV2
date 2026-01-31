@@ -25,6 +25,7 @@ module.exports = {
     ),
   async execute(interaction: any) {
     try {
+      console.log(interaction);
       const userid = interaction.options.getString("userid") ?? undefined;
       let ban = userid ? await getBan(interaction.client.db, userid) : null;
       ban.AdminName = `<@${ban?.AdminID ?? "System?"}>`;
