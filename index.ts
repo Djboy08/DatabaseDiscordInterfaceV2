@@ -229,8 +229,6 @@ const server = Bun.serve({
 });
 
 console.log(`Server running at ${server.url}`);
-
-client.login(Bun.env.DISCORD_TOKEN);
 client.on(Events.ShardError, (error) => {
   console.error("A websocket connection encountered an error:", error);
 });
@@ -243,3 +241,5 @@ client.once(Events.ClientReady, (readyClient: ClientType<true>) => {
 client.on(Events.Error, (error) => {
   console.error("The client encountered an error:", error);
 });
+
+client.login(Bun.env.DISCORD_TOKEN);
