@@ -26,6 +26,7 @@ module.exports = {
     ),
   async execute(interaction: any) {
     try {
+      console.log("start");
       const userid = interaction.options.getString("userid") ?? undefined;
       console.log("Userid:", userid);
       let ban = userid ? await getBan(interaction.client.db, userid) : null;
