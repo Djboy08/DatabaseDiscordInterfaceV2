@@ -25,6 +25,7 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction: any) {
+    console.log("f1");
     try {
       console.log("start");
       const userid = interaction.options.getString("userid") ?? undefined;
