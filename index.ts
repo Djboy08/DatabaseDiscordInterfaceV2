@@ -244,4 +244,10 @@ client.modals = new Collection();
 console.log(
   `Starting Discord client with token ${Bun.env.DISCORD_TOKEN?.slice(0, 4)}********`,
 );
+client.on("debug", (info) => {
+  console.log("DEBUG:", info);
+});
+client.on("warn", (info) => {
+  console.log("WARN:", info);
+});
 client.login(Bun.env.DISCORD_TOKEN);
