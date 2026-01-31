@@ -117,7 +117,7 @@ const server = Bun.serve({
   // `routes` requires Bun v1.2.3+
   routes: {
     // Static routes
-    "/exploit/webhook/": {
+    "/exploit/webhook/t": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
@@ -155,7 +155,7 @@ const server = Bun.serve({
         }
       },
     },
-    "/trade/webhook/": {
+    "/trade/webhook/t": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
