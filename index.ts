@@ -240,3 +240,6 @@ client.on(Events.ShardError, (error) => {
 client.once(Events.ClientReady, (readyClient: ClientType<true>) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
+client.on(Events.Error, (error) => {
+  console.error("The client encountered an error:", error);
+});
