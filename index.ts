@@ -9,6 +9,7 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import type { Client as ClientType } from "discord.js";
+import { BatchQueue } from "./utility/batch-queue";
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -101,6 +102,18 @@ for (const file of modalFiles) {
   }
 }
 
+const tradeHook = new WebhookClient({
+  url: Bun.env.DISCORD_TRADE_LOG_WEBHOOK_URL!,
+});
+
+const apiTradeLogQueue = new BatchQueue<any>({
+  batchSize: 10,
+  flushInterval: 5_000,
+  send: async (embeds) => {
+    await tradeHook.send({ content: "Trade Logs Batched:", embeds });
+  },
+});
+
 // Log in to Discord with your client's token
 setInterval(() => {
   unbanLengthCheckDatabase(client.db);
@@ -155,7 +168,7 @@ const server = Bun.serve({
         }
       },
     },
-    "/trade/webhook/t": {
+    "/trade/webhook": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
@@ -169,9 +182,7 @@ const server = Bun.serve({
               error: "Incorrect Authorization",
             });
           }
-          const hook = new WebhookClient({
-            url: Bun.env.DISCORD_TRADE_LOG_WEBHOOK_URL!,
-          });
+
           const body = await req.json();
           const msg = body.msg;
           let regex = /Account Age - ([\s\S]*?) Days/g;
@@ -198,7 +209,9 @@ const server = Bun.serve({
           if (isAgeBelow100) {
             embed.setColor("#FFCCCB");
           }
-          await hook.send({ embeds: [embed] });
+
+          //   await tradeHook.send({ embeds: [embed] });
+          apiTradeLogQueue.enqueue(embed);
           return Response.json({ success: true });
         } catch (er) {
           return Response.json({ success: false, error: er });
