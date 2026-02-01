@@ -230,7 +230,9 @@ const server = Bun.serve({
     const subdomain = hostname?.split(".")[0];
 
     if (subdomain === "api" && req.url.endsWith("/bansv4")) {
+      console.log("hit");
       if (BANS) {
+        console.log("bans");
         return Response.json(BANS);
       } else {
         return Response.json({ success: false });
