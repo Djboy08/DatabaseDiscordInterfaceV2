@@ -168,7 +168,7 @@ const loggingServer = Bun.serve({
         }
       },
     },
-    "/trade/webhook": {
+    "/trade/webhook/": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
