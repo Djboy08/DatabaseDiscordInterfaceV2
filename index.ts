@@ -126,7 +126,7 @@ setInterval(async () => {
 
 const GUID = Bun.env.RBLX_GUID!;
 const server = Bun.serve({
-  //   port: 3000,
+  port: 3000,
   // `routes` requires Bun v1.2.3+
   //   routes: {
   //     // Static routes
