@@ -128,97 +128,97 @@ const GUID = Bun.env.RBLX_GUID!;
 const server = Bun.serve({
   port: 3000,
   // `routes` requires Bun v1.2.3+
-  routes: {
-    // Static routes
-    "/exploit/webhook/t": {
-      POST: async (req: Request) => {
-        try {
-          let headers = req.headers;
-          if (
-            !headers.get("authorization") ||
-            headers.get("authorization") != GUID
-          ) {
-            console.log("NO AUTHORIZATION");
-            return Response.json({
-              success: false,
-              error: "Incorrect Authorization",
-            });
-          }
+  //   routes: {
+  //     // Static routes
+  //     "/exploit/webhook/t": {
+  //       POST: async (req: Request) => {
+  //         try {
+  //           let headers = req.headers;
+  //           if (
+  //             !headers.get("authorization") ||
+  //             headers.get("authorization") != GUID
+  //           ) {
+  //             console.log("NO AUTHORIZATION");
+  //             return Response.json({
+  //               success: false,
+  //               error: "Incorrect Authorization",
+  //             });
+  //           }
 
-          const hook = new WebhookClient({
-            url: Bun.env.DISCORD_EXPLOIT_LOG_WEBHOOK_URL!,
-          });
-          const body = await req.json();
-          const msg = body.msg;
-          // let randomadmin = await this.discord.getRandomAdmin();
-          // randomadmin = randomadmin || "No Admin Is Online";
-          // if(msg.search("Dealing damage faster than a usual rate.") >= 0) return;
-          const embed = new EmbedBuilder()
-            .setTitle("Exploit Logged")
-            .setFooter({ text: "from game" })
-            .setDescription(msg);
-          // hook.send({content: `<@${randomadmin.user.id}>`, embeds: [embed]});
-          await hook.send({
-            content: `Temp removed admin ping`,
-            embeds: [embed],
-          });
-          return Response.json({ success: true });
-        } catch (er) {
-          return Response.json({ success: false, error: er });
-        }
-      },
-    },
-    "/trade/webhook": {
-      POST: async (req: Request) => {
-        try {
-          let headers = req.headers;
-          if (
-            !headers.get("authorization") ||
-            headers.get("authorization") != GUID
-          ) {
-            console.log("NO AUTHORIZATION");
-            return Response.json({
-              success: false,
-              error: "Incorrect Authorization",
-            });
-          }
+  //           const hook = new WebhookClient({
+  //             url: Bun.env.DISCORD_EXPLOIT_LOG_WEBHOOK_URL!,
+  //           });
+  //           const body = await req.json();
+  //           const msg = body.msg;
+  //           // let randomadmin = await this.discord.getRandomAdmin();
+  //           // randomadmin = randomadmin || "No Admin Is Online";
+  //           // if(msg.search("Dealing damage faster than a usual rate.") >= 0) return;
+  //           const embed = new EmbedBuilder()
+  //             .setTitle("Exploit Logged")
+  //             .setFooter({ text: "from game" })
+  //             .setDescription(msg);
+  //           // hook.send({content: `<@${randomadmin.user.id}>`, embeds: [embed]});
+  //           await hook.send({
+  //             content: `Temp removed admin ping`,
+  //             embeds: [embed],
+  //           });
+  //           return Response.json({ success: true });
+  //         } catch (er) {
+  //           return Response.json({ success: false, error: er });
+  //         }
+  //       },
+  //     },
+  //     "/trade/webhook": {
+  //       POST: async (req: Request) => {
+  //         try {
+  //           let headers = req.headers;
+  //           if (
+  //             !headers.get("authorization") ||
+  //             headers.get("authorization") != GUID
+  //           ) {
+  //             console.log("NO AUTHORIZATION");
+  //             return Response.json({
+  //               success: false,
+  //               error: "Incorrect Authorization",
+  //             });
+  //           }
 
-          const body = await req.json();
-          const msg = body.msg;
-          let regex = /Account Age - ([\s\S]*?) Days/g;
-          let find = msg.match(regex);
-          let isAgeBelow100 = false;
-          if (find) {
-            find.forEach((element: any) => {
-              let n = element
-                .replace("Account Age - ", "")
-                .replace(" Days", "")
-                .replace(",", "");
-              n = parseFloat(n);
-              if (isAgeBelow100 == false && n <= 100) {
-                isAgeBelow100 = true;
-              }
-            });
-          }
-          // if(msg.search("Dealing damage faster than a usual rate.") >= 0) return;
-          const embed = new EmbedBuilder()
-            .setTitle("Trade Log")
-            .setFooter({ text: "from game" })
-            .setDescription(msg);
+  //           const body = await req.json();
+  //           const msg = body.msg;
+  //           let regex = /Account Age - ([\s\S]*?) Days/g;
+  //           let find = msg.match(regex);
+  //           let isAgeBelow100 = false;
+  //           if (find) {
+  //             find.forEach((element: any) => {
+  //               let n = element
+  //                 .replace("Account Age - ", "")
+  //                 .replace(" Days", "")
+  //                 .replace(",", "");
+  //               n = parseFloat(n);
+  //               if (isAgeBelow100 == false && n <= 100) {
+  //                 isAgeBelow100 = true;
+  //               }
+  //             });
+  //           }
+  //           // if(msg.search("Dealing damage faster than a usual rate.") >= 0) return;
+  //           const embed = new EmbedBuilder()
+  //             .setTitle("Trade Log")
+  //             .setFooter({ text: "from game" })
+  //             .setDescription(msg);
 
-          if (isAgeBelow100) {
-            embed.setColor("#FFCCCB");
-          }
+  //           if (isAgeBelow100) {
+  //             embed.setColor("#FFCCCB");
+  //           }
 
-          //   await tradeHook.send({ embeds: [embed] });
-          apiTradeLogQueue.enqueue(embed);
-          return Response.json({ success: true });
-        } catch (er) {
-          return Response.json({ success: false, error: er });
-        }
-      },
-    },
-  },
+  //           //   await tradeHook.send({ embeds: [embed] });
+  //           apiTradeLogQueue.enqueue(embed);
+  //           return Response.json({ success: true });
+  //         } catch (er) {
+  //           return Response.json({ success: false, error: er });
+  //         }
+  //       },
+  //     },
+  //   },
 
   // (optional) fallback for unmatched routes:
   // Required if Bun's version < 1.2.3
