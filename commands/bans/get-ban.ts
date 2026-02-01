@@ -28,7 +28,6 @@ module.exports = {
       console.log(interaction);
       const userid = interaction.options.getString("userid") ?? undefined;
       let ban = userid ? await getBan(interaction.client.db, userid) : null;
-      ban.AdminName = `<@${ban?.AdminID ?? "System?"}>`;
       if (!ban) {
         await interaction.reply({
           content: `No ban found for user ${userid}.`,
@@ -36,6 +35,7 @@ module.exports = {
         });
         return;
       }
+      ban.AdminName = `<@${ban?.AdminID ?? "System?"}>`;
       let embed = getBanEmbed({
         UserID: ban.UserID,
         Banned: ban.Banned,
