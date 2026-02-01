@@ -224,11 +224,11 @@ const server = Bun.serve({
   // Required if Bun's version < 1.2.3
   fetch(req) {
     const host = req.headers.get("host");
-    console.log("HIT", host);
     // e.g. "api.example.com:3000"
 
     const hostname = host?.split(":")[0]; // remove port
     const subdomain = hostname?.split(".")[0];
+    console.log("HIT", subdomain, req.url);
 
     if (subdomain === "api" && req.url.endsWith("/bansv4")) {
       console.log("hit");
