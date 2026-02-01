@@ -108,7 +108,7 @@ const tradeHook = new WebhookClient({
 
 const apiTradeLogQueue = new BatchQueue<any>({
   batchSize: 10,
-  flushInterval: 5_000,
+  flushInterval: 30_000,
   send: async (embeds) => {
     await tradeHook.send({ content: "Trade Logs Batched:", embeds });
   },
@@ -244,6 +244,7 @@ const server = Bun.serve({
 });
 
 console.log(`Server running at ${server.url}`);
+console.log(`Server running at ${loggingServer.url}`);
 console.log(
   `Starting Discord client with token ${Bun.env.DISCORD_TOKEN?.slice(0, 4)}********`,
 );
