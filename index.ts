@@ -224,6 +224,7 @@ const server = Bun.serve({
   // Required if Bun's version < 1.2.3
   fetch(req) {
     const host = req.headers.get("host");
+    console.log("HIT", host);
     // e.g. "api.example.com:3000"
 
     const hostname = host?.split(":")[0]; // remove port
