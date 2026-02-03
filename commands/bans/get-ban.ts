@@ -1,6 +1,6 @@
 const { getBan } = require("../../database-helper");
 const { getBanEmbed } = require("../../discord-helper");
-
+const { formatUnbanDate } = require("../../utility/date");
 const {
   SlashCommandBuilder,
   LabelBuilder,
@@ -52,37 +52,3 @@ module.exports = {
     }
   },
 };
-function formatUnbanDate(UnbanDate: any): string {
-  const durationRegex = /(\d+)([DHMYS])/;
-  const match = UnbanDate.toString().match(durationRegex);
-  if (!match) return "";
-
-  const value = parseInt(match[1]);
-  const unit = match[2];
-
-  const now = new Date();
-  let unbanDate = new Date(now);
-
-  switch (unit) {
-    case "D":
-      unbanDate.setDate(now.getDate() + value);
-      break;
-    case "H":
-      unbanDate.setHours(now.getHours() + value);
-      break;
-    case "M":
-      unbanDate.setMinutes(now.getMinutes() + value);
-      break;
-    case "S":
-      unbanDate.setSeconds(now.getSeconds() + value);
-      break;
-    case "Y":
-      unbanDate.setFullYear(now.getFullYear() + value);
-      break;
-  }
-
-  return unbanDate.toISOString();
-  if (!UnbanDate) return "";
-  const date = new Date(UnbanDate);
-  return date.toISOString().slice(0, 10); // Format as YYYY-MM-DD
-}
