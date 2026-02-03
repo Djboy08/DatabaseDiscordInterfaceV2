@@ -1,6 +1,6 @@
 const { getBan } = require("../../database-helper");
 const banModal = require("../../modals/ban.ts");
-const { formatUnbanDate } = require("../../utility/date");
+const { formatUnbanDate } = require("@/utility/date");
 const {
   SlashCommandBuilder,
   LabelBuilder,
