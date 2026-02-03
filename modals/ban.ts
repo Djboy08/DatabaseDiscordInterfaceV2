@@ -82,7 +82,7 @@ function formatUnbanDate(UnbanDate: any): string | Date {
   // Otherwise if its an actual ISO date, return that
   if (typeof UnbanDate === "string" && /^[0-9]+[DHMYS]$/.test(UnbanDate)) {
     const durationRegex = /(\d+)([DHMYS])/;
-    const match = UnbanDate.toString().match(durationRegex);
+    const match = UnbanDate.toString().toUpperCase().match(durationRegex);
     if (!match) return "";
 
     const value = parseInt(match[1]);
