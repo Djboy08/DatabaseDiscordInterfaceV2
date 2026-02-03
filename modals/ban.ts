@@ -31,9 +31,14 @@ module.exports = {
       obj.AdminID = interaction.user.id;
       obj.AdminName = interaction.user.tag;
       obj.Length = 0;
-      obj.UnbanDate = new Date(
-        formatUnbanDate(interaction.fields.getTextInputValue("unbanDateInput")),
-      );
+      obj.UnbanDate =
+        interaction.fields.getTextInputValue("unbanDateInput") !== ""
+          ? new Date(
+              formatUnbanDate(
+                interaction.fields.getTextInputValue("unbanDateInput"),
+              ),
+            )
+          : 0;
       obj.TestUniverse = false;
       await updateBan(interaction.client.db, obj);
       console.log("Parsed modal data:", obj);

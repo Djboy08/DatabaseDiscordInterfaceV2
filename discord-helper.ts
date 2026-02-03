@@ -42,7 +42,7 @@ export function getBanEmbed({
             value: Proof || "[No Proof]",
             inline: false,
           },
-          ...(UnbanDate
+          ...(UnbanDate && UnbanDate !== 0
             ? [
                 {
                   name: "Unban Date",
