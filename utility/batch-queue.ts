@@ -3,6 +3,7 @@ type SendFn<T> = (payload: T[]) => Promise<void>;
 interface BatchQueueOptions<T> {
   batchSize: number;
   flushInterval: number;
+  flushOnEnqueue?: boolean;
   send: SendFn<T>;
 }
 
@@ -10,17 +11,23 @@ export class BatchQueue<T> {
   private queue: T[] = [];
   private isFlushing = false;
   private timer: Timer;
+  private flushOnEnqueue: boolean = true;
 
   constructor(private options: BatchQueueOptions<T>) {
+    this.flushOnEnqueue = options.flushOnEnqueue ?? true;
     this.timer = setInterval(() => this.flush(), options.flushInterval);
   }
 
   enqueue(item: T) {
     this.queue.push(item);
 
-    if (this.queue.length >= this.options.batchSize) {
+    if (this.flushOnEnqueue && this.queue.length >= this.options.batchSize) {
       void this.flush();
     }
+  }
+
+  getLength() {
+    return this.queue.length;
   }
 
   async flush() {

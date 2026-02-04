@@ -106,10 +106,15 @@ const tradeHook = new WebhookClient({
   url: Bun.env.DISCORD_TRADE_LOG_WEBHOOK_URL!,
 });
 
-const apiTradeLogQueue = new BatchQueue<any>({
+let apiTradeLogQueue: BatchQueue<any>;
+apiTradeLogQueue = new BatchQueue<any>({
   batchSize: 10,
-  flushInterval: 30_000,
+  flushInterval: 5_000,
   send: async (embeds) => {
+    console.log(
+      "Total amount of trade logs left in queue:",
+      apiTradeLogQueue.getLength(),
+    );
     await tradeHook.send({ content: "Trade Logs Batched:", embeds });
   },
 });
@@ -168,7 +173,7 @@ const loggingServer = Bun.serve({
         }
       },
     },
-    "/trade/webhook/2": {
+    "/trade/webhook/": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
