@@ -110,6 +110,7 @@ let apiTradeLogQueue: BatchQueue<any>;
 apiTradeLogQueue = new BatchQueue<any>({
   batchSize: 10,
   flushInterval: 5_000,
+  flushOnEnqueue: false,
   send: async (embeds) => {
     console.log(
       "Total amount of trade logs left in queue:",
