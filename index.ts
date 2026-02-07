@@ -144,7 +144,9 @@ const loggingServer = Bun.serve({
   routes: {
     // Static routes
     "/ban/:UserId/": {
-      POST: async (req: Request, { params }: any) => {
+      POST: async (req: Request) => {
+        // @ts-expect-error
+        const params = req.params;
         try {
           if (!params.UserId) {
             console.log("NO USERID");
