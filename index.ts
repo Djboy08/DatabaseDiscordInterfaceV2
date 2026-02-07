@@ -10,11 +10,18 @@ import {
 } from "discord.js";
 import type { Client as ClientType } from "discord.js";
 import { BatchQueue } from "./utility/batch-queue";
+import { color } from "bun";
 
 const fs = require("node:fs");
 const path = require("node:path");
 const { MongoClient } = require("mongodb");
-const { unbanLengthCheckDatabase, getBans } = require("./database-helper");
+const {
+  unbanLengthCheckDatabase,
+  getBans,
+  updateBan,
+} = require("./database-helper");
+
+const { getBanEmbed } = require("./discord-helper");
 
 // Extend Client with commands property
 declare module "discord.js" {
@@ -136,6 +143,55 @@ const loggingServer = Bun.serve({
   // `routes` requires Bun v1.2.3+
   routes: {
     // Static routes
+    "/ban/:UserId/": {
+      POST: async (req: Request, { params }: any) => {
+        try {
+          if (!params.UserId) {
+            console.log("NO USERID");
+            return Response.json({
+              success: false,
+              error: "No UserID Provided",
+            });
+          }
+          const headers = req.headers;
+          if (
+            !headers.get("authorization") ||
+            headers.get("authorization") != GUID
+          ) {
+            console.log("NO AUTHORIZATION");
+            return Response.json({
+              success: false,
+              error: "Incorrect Authorization",
+            });
+          }
+          const body = await req.json();
+          let UserInfo: any = {};
+          UserInfo.UserID = params.UserId;
+          UserInfo.Banned = true;
+          UserInfo.Length = 0;
+          UserInfo.Reason = body.reason ? body.reason : "System Banned";
+          UserInfo.AdminName = "System";
+          UserInfo.UnbanDate = 0;
+          UserInfo.AdminID = "System";
+          UserInfo.TestUniverse = false;
+          if (body.proof) UserInfo.Proof = body.proof;
+          await updateBan(client.db, UserInfo);
+          let embed = getBanEmbed(UserInfo, {
+            color: 2105893,
+          });
+          const webhookClient = new WebhookClient({
+            url: Bun.env.DISCORD_BAN_LOG_WEBHOOK_URL!,
+          });
+          await webhookClient.send({
+            ...embed,
+            content: `Banned user ${UserInfo.UserID} by ${UserInfo.AdminName} (${UserInfo.AdminID})`,
+          });
+          return Response.json({ success: true });
+        } catch (er) {
+          return Response.json({ success: false, error: er });
+        }
+      },
+    },
     "/exploit/webhook/t": {
       POST: async (req: Request) => {
         try {

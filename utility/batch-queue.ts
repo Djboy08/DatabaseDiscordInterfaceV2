@@ -36,7 +36,6 @@ export class BatchQueue<T> {
     this.isFlushing = true;
 
     const batch = this.queue.splice(0, this.options.batchSize);
-    console.log(this.options.batchSize);
 
     try {
       await this.options.send(batch);

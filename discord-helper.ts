@@ -1,20 +1,23 @@
-export function getBanEmbed({
-  UserID,
-  Banned,
-  Length,
-  Reason,
-  Proof,
-  UnbanDate,
-  AdminName,
-  TestUniverse,
-}: any) {
+export function getBanEmbed(
+  {
+    UserID,
+    Banned,
+    Length,
+    Reason,
+    Proof,
+    UnbanDate,
+    AdminName,
+    TestUniverse,
+  }: any,
+  options: any = {},
+) {
   let data = {
     embeds: [
       {
         title: `Ban Information: ${UserID}`,
         type: `rich`,
         description: "",
-        color: false ? 2105893 : Banned ? 15158332 : 2600544,
+        color: options.color || (false ? 2105893 : Banned ? 15158332 : 2600544),
         url: `https://www.roblox.com/users/${UserID}/profile`,
         fields: [
           {
