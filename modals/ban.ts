@@ -23,15 +23,7 @@ module.exports = {
     const userid = interaction.user.id;
 
     try {
-      let obj: any = {};
-      obj.Banned = true;
-      obj.UserID = initalInteraction.options.getString("userid").trim();
-      obj.Reason = interaction.fields.getTextInputValue("reasonInput");
-      obj.Proof = interaction.fields.getTextInputValue("proofInput");
-      obj.AdminID = interaction.user.id;
-      obj.AdminName = interaction.user.tag;
-      obj.Length = 0;
-      obj.UnbanDate =
+      const ud =
         interaction.fields.getTextInputValue("unbanDateInput") !== ""
           ? new Date(
               formatUnbanDate(
@@ -39,6 +31,16 @@ module.exports = {
               ),
             )
           : 0;
+
+      let obj: any = {};
+      obj.Banned = true;
+      obj.UserID = initalInteraction.options.getString("userid").trim();
+      obj.Reason = interaction.fields.getTextInputValue("reasonInput");
+      obj.Proof = interaction.fields.getTextInputValue("proofInput");
+      obj.AdminID = interaction.user.id;
+      obj.AdminName = interaction.user.tag;
+      obj.Length = ud ? ud.getTime() - Date.now() : 0;
+      obj.UnbanDate = ud;
       obj.TestUniverse = false;
       await updateBan(interaction.client.db, obj);
       console.log("Parsed modal data:", obj);
