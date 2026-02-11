@@ -151,7 +151,6 @@ const loggingServer = Bun.serve({
           console.log(
             `New art webhook, with the header: ${req.headers.get("x-discourse-event")}`,
           );
-          console.log(`Request body: ${await req.text()}`);
           let body = await req.json();
           setTimeout(async () => {
             try {
