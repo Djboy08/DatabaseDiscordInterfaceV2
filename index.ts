@@ -21,7 +21,7 @@ const {
   updateBan,
 } = require("./database-helper");
 
-const { GetArtResponse } = require("./art-helper");
+const { GetArtResponse } = require("@/utility/discourse");
 
 const { getBanEmbed } = require("./discord-helper");
 
