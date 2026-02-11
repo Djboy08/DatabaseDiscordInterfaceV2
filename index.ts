@@ -147,6 +147,67 @@ const loggingServer = Bun.serve({
     // Static routes
     "/art/webhook": {
       POST: async (req: Request) => {
+        try {
+          console.log(
+            `New art webhook, with the header: ${req.headers.get("x-discourse-event")}`,
+          );
+          setTimeout(async () => {
+            try {
+              let body = await req.json();
+              let headers = req.headers;
+              if (headers.get("x-discourse-event") != "topic_created") return;
+
+              let topic = body.topic;
+              let topic_id = topic.id;
+              let date_created = new Date(topic.created_at);
+              let today = new Date();
+              let user = topic.created_by;
+              let response = await GetArtResponse(topic_id, 10);
+              // let response = await fetch(`https://forum.arcaneodyssey.dev/t/${topic_id}.json`);
+              // response = await response.json();
+
+              let excerpt;
+              if (response.post_stream && response.post_stream.posts[0]) {
+                let post = response.post_stream.posts[0];
+                excerpt = post.cooked;
+                excerpt = excerpt.replace(/<[^>]*>/g, "");
+              }
+
+              let avatar_template = user.avatar_template;
+              avatar_template = avatar_template.replace(`{size}`, "60");
+              avatar_template = `https://forum.arcaneodyssey.dev${avatar_template}`;
+              const hook = new WebhookClient({
+                url: Bun.env.DISCORD_ART_WEBHOOK_URL!,
+              });
+              const embed = new EmbedBuilder()
+                .setTitle(`${topic.title}`)
+                .setAuthor({
+                  name: `${user.name} @${user.username}`,
+                  iconURL: avatar_template,
+                  url: `https://forum.arcaneodyssey.dev/u/${user.username}`,
+                })
+                .setColor("#ED207B")
+                .setURL(`https://forum.arcaneodyssey.dev/t/${topic.id}`);
+              // .setDescription(`${topic.excerpt.charAt(0).toUpperCase() + topic.excerpt.slice(1)}`);
+              if (response.image_url) {
+                console.log(response.image_url);
+                embed.setImage(response.image_url);
+                embed.setThumbnail(avatar_template);
+              }
+              if (excerpt) {
+                embed.setDescription(
+                  `${excerpt.charAt(0).toUpperCase() + excerpt.slice(1)}`,
+                );
+              }
+              await hook.send({ embeds: [embed] });
+            } catch (e) {
+              console.log(e);
+            }
+          }, 1000 * 30);
+        } catch (er) {
+          console.log(er);
+          return Response.json({ success: false, error: er });
+        }
         return Response.json({ success: true });
       },
     },
