@@ -129,6 +129,24 @@ apiTradeLogQueue = new BatchQueue<any>({
   },
 });
 
+const shoutHook = new WebhookClient({
+  url: Bun.env.DISCORD_SHOUT_LOG_WEBHOOK_URL!,
+});
+
+let apiShoutLogQueue: BatchQueue<any>;
+apiShoutLogQueue = new BatchQueue<any>({
+  batchSize: 10,
+  flushInterval: 5_000,
+  flushOnEnqueue: false,
+  send: async (embeds) => {
+    console.log(
+      "Total amount of shout logs left in queue:",
+      apiShoutLogQueue.getLength(),
+    );
+    await shoutHook.send({ content: "Shout Logs Batched:", embeds });
+  },
+});
+
 // Log in to Discord with your client's token
 setInterval(() => {
   unbanLengthCheckDatabase(client.db);
@@ -344,6 +362,33 @@ const loggingServer = Bun.serve({
 
           //   await tradeHook.send({ embeds: [embed] });
           apiTradeLogQueue.enqueue(embed);
+          return Response.json({ success: true });
+        } catch (er) {
+          return Response.json({ success: false, error: er });
+        }
+      },
+    },
+    "/globalshout/webhook/": {
+      POST: async (req: Request) => {
+        try {
+          let headers = req.headers;
+          if (
+            !headers.get("authorization") ||
+            headers.get("authorization") != GUID
+          ) {
+            console.log("NO AUTHORIZATION");
+            return Response.json({
+              success: false,
+              error: "Incorrect Authorization",
+            });
+          }
+          const body = await req.json();
+          const embed = new EmbedBuilder()
+            .setTitle("Shout Logged")
+            .setFooter({ text: "from game" })
+            .setDescription(body.msg);
+          //   await tradeHook.send({ embeds: [embed] });
+          apiShoutLogQueue.enqueue(embed);
           return Response.json({ success: true });
         } catch (er) {
           return Response.json({ success: false, error: er });
