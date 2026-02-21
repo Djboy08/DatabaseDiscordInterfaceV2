@@ -368,7 +368,7 @@ const loggingServer = Bun.serve({
         }
       },
     },
-    "/globalshout/webhook/": {
+    "/globalshout/webhook": {
       POST: async (req: Request) => {
         try {
           let headers = req.headers;
