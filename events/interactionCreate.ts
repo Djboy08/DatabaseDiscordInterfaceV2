@@ -40,10 +40,13 @@ module.exports = {
 
       if (command.roleNeeded) {
         const member = interaction.member;
+        const roles = Array.isArray(command.roleNeeded)
+          ? command.roleNeeded
+          : [command.roleNeeded];
         if (
           !member ||
           !("cache" in member.roles) ||
-          !member.roles.cache.has(command.roleNeeded)
+          !roles.some((role: string) => (member.roles as any).cache.has(role))
         ) {
           await interaction.reply({
             content: "You do not have permission to use this command.",

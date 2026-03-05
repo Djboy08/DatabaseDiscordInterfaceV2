@@ -97,7 +97,14 @@ for (const file of modalFiles) {
     client.modals.set(
       modal.name,
       async (interaction: any, initalInteraction: any) => {
-        if (!interaction.member.roles.cache.has(modal.roleNeeded)) {
+        const roles = Array.isArray(modal.roleNeeded)
+          ? modal.roleNeeded
+          : [modal.roleNeeded];
+        if (
+          !roles.some((role: string) =>
+            (interaction.member.roles as any).cache.has(role),
+          )
+        ) {
           await interaction.reply({
             content: "You do not have permission to use this command.",
             flags: 1 << 6, // Ephemeral

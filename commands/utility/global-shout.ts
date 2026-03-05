@@ -18,7 +18,7 @@ const {
 } = require("discord.js");
 
 module.exports = {
-  roleNeeded: "165239721067413504",
+  roleNeeded: ["165239721067413504", "1349843679153619014"], // @Developer and @Develper-perms respectively
   data: new SlashCommandBuilder()
     .setName("global-shout")
     .setDescription("Sends a global shout to all users in the game.")
