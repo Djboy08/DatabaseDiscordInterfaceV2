@@ -236,57 +236,57 @@ const loggingServer = Bun.serve({
         return Response.json({ success: true });
       },
     },
-    "/ban/:UserId/": {
-      POST: async (req: Request) => {
-        // @ts-expect-error
-        const params = req.params;
-        try {
-          if (!params.UserId) {
-            console.log("NO USERID");
-            return Response.json({
-              success: false,
-              error: "No UserID Provided",
-            });
-          }
-          const headers = req.headers;
-          if (
-            !headers.get("authorization") ||
-            headers.get("authorization") != GUID
-          ) {
-            console.log("NO AUTHORIZATION");
-            return Response.json({
-              success: false,
-              error: "Incorrect Authorization",
-            });
-          }
-          const body = await req.json();
-          let UserInfo: any = {};
-          UserInfo.UserID = params.UserId;
-          UserInfo.Banned = true;
-          UserInfo.Length = 0;
-          UserInfo.Reason = body.reason ? body.reason : "System Banned";
-          UserInfo.AdminName = "System";
-          UserInfo.UnbanDate = 0;
-          UserInfo.AdminID = "System";
-          UserInfo.TestUniverse = false;
-          if (body.proof) UserInfo.Proof = body.proof;
-          await updateBan(client.db, UserInfo);
-          let embed = getBanEmbed(UserInfo, {
-            color: 2105893,
-          });
-          const webhookClient = new WebhookClient({
-            url: Bun.env.DISCORD_BAN_LOG_WEBHOOK_URL!,
-          });
-          await webhookClient.send({
-            ...embed,
-            content: `Banned user ${UserInfo.UserID} by ${UserInfo.AdminName} (${UserInfo.AdminID})`,
-          });
-          return Response.json({ success: true });
-        } catch (er) {
-          return Response.json({ success: false, error: er });
-        }
-      },
-    },
+    // "/ban/:UserId/": {
+    //   POST: async (req: Request) => {
+    //     // @ts-expect-error
+    //     const params = req.params;
+    //     try {
+    //       if (!params.UserId) {
+    //         console.log("NO USERID");
+    //         return Response.json({
+    //           success: false,
+    //           error: "No UserID Provided",
+    //         });
+    //       }
+    //       const headers = req.headers;
+    //       if (
+    //         !headers.get("authorization") ||
+    //         headers.get("authorization") != GUID
+    //       ) {
+    //         console.log("NO AUTHORIZATION");
+    //         return Response.json({
+    //           success: false,
+    //           error: "Incorrect Authorization",
+    //         });
+    //       }
+    //       const body = await req.json();
+    //       let UserInfo: any = {};
+    //       UserInfo.UserID = params.UserId;
+    //       UserInfo.Banned = true;
+    //       UserInfo.Length = 0;
+    //       UserInfo.Reason = body.reason ? body.reason : "System Banned";
+    //       UserInfo.AdminName = "System";
+    //       UserInfo.UnbanDate = 0;
+    //       UserInfo.AdminID = "System";
+    //       UserInfo.TestUniverse = false;
+    //       if (body.proof) UserInfo.Proof = body.proof;
+    //       await updateBan(client.db, UserInfo);
+    //       let embed = getBanEmbed(UserInfo, {
+    //         color: 2105893,
+    //       });
+    //       const webhookClient = new WebhookClient({
+    //         url: Bun.env.DISCORD_BAN_LOG_WEBHOOK_URL!,
+    //       });
+    //       await webhookClient.send({
+    //         ...embed,
+    //         content: `Banned user ${UserInfo.UserID} by ${UserInfo.AdminName} (${UserInfo.AdminID})`,
+    //       });
+    //       return Response.json({ success: true });
+    //     } catch (er) {
+    //       return Response.json({ success: false, error: er });
+    //     }
+    //   },
+    // },
     "/exploit/webhook/t": {
       POST: async (req: Request) => {
         try {
