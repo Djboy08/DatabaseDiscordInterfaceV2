@@ -161,6 +161,7 @@ setInterval(() => {
 
 let BANS: any = null;
 setInterval(async () => {
+  BANS = null;
   BANS = await getBans(client.db);
 }, 1000 * 8);
 
