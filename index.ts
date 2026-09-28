@@ -414,7 +414,7 @@ const server = Bun.serve({
   port: 80,
   // (optional) fallback for unmatched routes:
   // Required if Bun's version < 1.2.3
-  fetch(req) {
+  async fetch(req) {
     const host = req.headers.get("host");
     // e.g. "api.example.com:3000"
 
@@ -428,17 +428,7 @@ const server = Bun.serve({
         return Response.json({ success: false });
       }
     } else if (subdomain === "api" && req.url.endsWith("/bansv4/raw")) {
-      rawBans()
-        .then((rawBans) => {
-          return Response.json(rawBans);
-        })
-        .catch((err) => {
-          console.error("Error fetching raw bans:", err);
-          return Response.json({
-            success: false,
-            error: "Failed to fetch raw bans",
-          });
-        });
+      return Response.json(await rawBans());
     }
 
     return new Response("Not Found", { status: 404 });
