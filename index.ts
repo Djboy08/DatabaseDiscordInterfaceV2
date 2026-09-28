@@ -18,6 +18,7 @@ const { MongoClient } = require("mongodb");
 const {
   unbanLengthCheckDatabase,
   getBans,
+  getRawBans,
   updateBan,
 } = require("./database-helper");
 
@@ -405,6 +406,10 @@ const loggingServer = Bun.serve({
     },
   },
 });
+
+async function rawBans() {
+  return await getRawBans(client.db);
+}
 const server = Bun.serve({
   port: 80,
   // (optional) fallback for unmatched routes:
@@ -422,6 +427,18 @@ const server = Bun.serve({
       } else {
         return Response.json({ success: false });
       }
+    } else if (subdomain === "api" && req.url.endsWith("/bansv4/raw")) {
+      rawBans()
+        .then((rawBans) => {
+          return Response.json(rawBans);
+        })
+        .catch((err) => {
+          console.error("Error fetching raw bans:", err);
+          return Response.json({
+            success: false,
+            error: "Failed to fetch raw bans",
+          });
+        });
     }
 
     return new Response("Not Found", { status: 404 });

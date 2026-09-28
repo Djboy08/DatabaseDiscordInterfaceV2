@@ -92,3 +92,13 @@ export async function getBans(db: any) {
 
   return result;
 }
+export async function getRawBans(db: any) {
+  const collection = db.collection("Bans");
+  let result = await collection
+    .find({
+      Banned: false,
+    })
+    .toArray();
+
+  return result;
+}
